@@ -1,5 +1,7 @@
 package test.alpha.AlphaProject.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ public class CurrencyService {
     private final GifClient gifClient;
     private final String gifTagHigher;
     private final String gifTagLower;
+    private final Logger LOGGER = LoggerFactory.getLogger(CurrencyService.class);
 
     public CurrencyService(CurrencyClient currencyClient,
                            GiphyClient giphyClient,
@@ -44,10 +47,11 @@ public class CurrencyService {
                 gifTO = giphyClient.getRandomGifByTag(gifTagHigher).getBody();
             else
                 gifTO = giphyClient.getRandomGifByTag(gifTagLower).getBody();
+
             return gifClient.getGifByURL(URI.create(gifTO.getGifURL()));
         }
         catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.warn("getGifByCurrencyCode: ", e);
             throw new GifRequestException();
         }
     }
@@ -65,6 +69,7 @@ public class CurrencyService {
             return todayCurrencyRate > yesterdayCurrencyRate;
         }
         catch (Exception e) {
+            LOGGER.warn("isTodayRateHigher: ", e);
             throw new CurrencyRequestException();
         }
     }

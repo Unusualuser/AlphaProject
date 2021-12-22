@@ -14,6 +14,7 @@ import test.alpha.AlphaProject.service.CurrencyService;
 @RequestMapping("api")
 public class CurrencyController {
     private final CurrencyService currencyService;
+    private final Logger LOGGER = LoggerFactory.getLogger(CurrencyController.class);
 
     public CurrencyController(CurrencyService currencyService) {
         this.currencyService = currencyService;
@@ -24,6 +25,7 @@ public class CurrencyController {
         try {
             return currencyService.getGifByCurrencyCode(currencyCode);
         } catch (Exception e) {
+            LOGGER.warn("Warn /gif: ", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
