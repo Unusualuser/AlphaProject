@@ -21,6 +21,8 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-stub-runner'
+	testImplementation 'junit:junit:4.13.1'
+	testImplementation group: 'com.github.tomakehurst', name: 'wiremock-jre8-standalone', version: '2.32.0'
 }
 
 dependencyManagement {

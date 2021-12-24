@@ -1,0 +1,6 @@
+currency:
+  api:
+    historical: http://localhost:9561
+gif:
+  api:
+    random: http://localhost:9561

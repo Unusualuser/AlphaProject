@@ -11,7 +11,7 @@ import test.alpha.AlphaProject.client.GiphyClient;
 import test.alpha.AlphaProject.exceptions.GifRequestException;
 import test.alpha.AlphaProject.exceptions.IncorrectCurrencyCodeException;
 import test.alpha.AlphaProject.model.dto.CurrencyTO;
-import test.alpha.AlphaProject.model.dto.GifTO;
+import test.alpha.AlphaProject.model.dto.GiphyTO;
 import test.alpha.AlphaProject.exceptions.CurrencyRequestException;
 
 import java.net.URI;
@@ -42,14 +42,14 @@ public class CurrencyService {
 
     public ResponseEntity<byte[]> getGifByCurrencyCode(String currencyCode) throws CurrencyRequestException, GifRequestException, IncorrectCurrencyCodeException {
         boolean isTodayRateHigher = isTodayRateHigher(currencyCode);
-        GifTO gifTO;
+        GiphyTO giphyTO;
         try {
             if (isTodayRateHigher)
-                gifTO = giphyClient.getRandomGifByTag(gifTagHigher).getBody();
+                giphyTO = giphyClient.getRandomGifByTag(gifTagHigher).getBody();
             else
-                gifTO = giphyClient.getRandomGifByTag(gifTagLower).getBody();
+                giphyTO = giphyClient.getRandomGifByTag(gifTagLower).getBody();
 
-            return gifClient.getGifByURL(URI.create(gifTO.getGifURL()));
+            return gifClient.getGifByURL(URI.create(giphyTO.getGifURL()));
         }
         catch (Exception e) {
             LOGGER.warn("getGifByCurrencyCode: ", e);
