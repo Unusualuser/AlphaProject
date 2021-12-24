@@ -9,6 +9,7 @@ import test.alpha.AlphaProject.client.CurrencyClient;
 import test.alpha.AlphaProject.client.GifClient;
 import test.alpha.AlphaProject.client.GiphyClient;
 import test.alpha.AlphaProject.exceptions.GifRequestException;
+import test.alpha.AlphaProject.exceptions.IncorrectCurrencyCodeException;
 import test.alpha.AlphaProject.model.dto.CurrencyTO;
 import test.alpha.AlphaProject.model.dto.GifTO;
 import test.alpha.AlphaProject.exceptions.CurrencyRequestException;
@@ -39,7 +40,7 @@ public class CurrencyService {
         this.gifTagLower = gifTagLower;
     }
 
-    public ResponseEntity<byte[]> getGifByCurrencyCode(String currencyCode) throws CurrencyRequestException, GifRequestException {
+    public ResponseEntity<byte[]> getGifByCurrencyCode(String currencyCode) throws CurrencyRequestException, GifRequestException, IncorrectCurrencyCodeException {
         boolean isTodayRateHigher = isTodayRateHigher(currencyCode);
         GifTO gifTO;
         try {
@@ -56,13 +57,21 @@ public class CurrencyService {
         }
     }
 
-    public boolean isTodayRateHigher(String currencyCode) throws CurrencyRequestException {
+    public boolean isTodayRateHigher(String currencyCode) throws CurrencyRequestException, IncorrectCurrencyCodeException {
         String todayFormatDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String yesterdayFormatDate = LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        ResponseEntity<CurrencyTO> todayCurrencyResponse;
+        ResponseEntity<CurrencyTO> yesterdayCurrencyResponse;
         try {
-            ResponseEntity<CurrencyTO> todayCurrencyResponse = currencyClient.getCurrencyByDate(todayFormatDate);
-            ResponseEntity<CurrencyTO> yesterdayCurrencyResponse = currencyClient.getCurrencyByDate(yesterdayFormatDate);
+            todayCurrencyResponse = currencyClient.getCurrencyByDate(todayFormatDate);
+            yesterdayCurrencyResponse = currencyClient.getCurrencyByDate(yesterdayFormatDate);
+        }
+        catch (Exception e) {
+            LOGGER.warn("isTodayRateHigher: ", e);
+            throw new CurrencyRequestException();
+        }
 
+        try {
             double todayCurrencyRate = Objects.requireNonNull(todayCurrencyResponse.getBody()).getRates().get(currencyCode);
             double yesterdayCurrencyRate = Objects.requireNonNull(yesterdayCurrencyResponse.getBody()).getRates().get(currencyCode);
 
@@ -70,7 +79,7 @@ public class CurrencyService {
         }
         catch (Exception e) {
             LOGGER.warn("isTodayRateHigher: ", e);
-            throw new CurrencyRequestException();
+            throw new IncorrectCurrencyCodeException();
         }
     }
 }

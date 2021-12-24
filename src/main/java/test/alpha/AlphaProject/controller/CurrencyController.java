@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import test.alpha.AlphaProject.exceptions.IncorrectCurrencyCodeException;
 import test.alpha.AlphaProject.service.CurrencyService;
 
 @RestController
@@ -24,8 +25,11 @@ public class CurrencyController {
     public ResponseEntity<byte[]> getGifByCurrencyCode(@RequestParam String currencyCode) {
         try {
             return currencyService.getGifByCurrencyCode(currencyCode);
+        } catch (IncorrectCurrencyCodeException e) {
+            LOGGER.warn("/gif: ", e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            LOGGER.warn("Warn /gif: ", e);
+            LOGGER.warn("/gif: ", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
