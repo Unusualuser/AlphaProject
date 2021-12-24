@@ -2,7 +2,7 @@ package test.alpha.AlphaProject.model.dto;
 
 import java.util.Map;
 
-public class GifTO {
+public class GiphyTO {
     Map<String, Object> data;
 
     public Map<String, Object> getData() {
